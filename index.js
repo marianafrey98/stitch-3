@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -17,12 +18,13 @@ app.get("/", (req, res) => {
 
 app.post("/transferir", async (req, res) => {
   const { alias, monto } = req.body;
+  const montoMultiplicado = Number(monto) * 100;
 
   try {
     const response = await axios.post(
       "https://api.mercadopago.com/v1/transfers",
       {
-        transaction_amount: Number(monto),
+        transaction_amount: montoMultiplicado,
         target: {
           type: "alias",
           value: alias
@@ -38,9 +40,8 @@ app.post("/transferir", async (req, res) => {
 
     res.json({ success: true, data: response.data });
   } catch (error) {
-    const errMsg = error.response?.data || error.message || "Error desconocido";
-    console.error("Error al transferir:", errMsg);
-    res.status(500).json({ success: false, error: errMsg });
+    console.error("Error al transferir:", error.response?.data || error.message);
+    res.status(500).json({ success: false, error: error.response?.data || error.message });
   }
 });
 
