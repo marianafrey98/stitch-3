@@ -38,8 +38,9 @@ app.post("/transferir", async (req, res) => {
 
     res.json({ success: true, data: response.data });
   } catch (error) {
-    console.error("Error al transferir:", error.response?.data || error.message);
-    res.status(500).json({ success: false, error: error.response?.data || error.message });
+    const errMsg = error.response?.data || error.message || "Error desconocido";
+    console.error("Error al transferir:", errMsg);
+    res.status(500).json({ success: false, error: errMsg });
   }
 });
 
